@@ -1,0 +1,280 @@
+<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">Programming Blog</a>
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarCollapse"
+      aria-controls="navbarCollapse"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+      <ul class="navbar-nav me-auto mb-2 mb-md-0">
+        
+      </ul>
+      <form class="d-flex" role="search">
+        <input
+          class="form-control me-2"
+          type="search"
+          placeholder="Search"
+          aria-label="Search"
+        />
+        <button class="btn btn-outline-success" type="submit">Search</button>
+      </form>
+    </div>
+  </div>
+</nav>
+
+<main class="container">
+  <div class="bg-light p-5 rounded">
+    <h1>Navbar example</h1>
+    <p class="lead">
+      This example is a quick exercise to illustrate how fixed to top navbar
+      works. As you scroll, it will remain fixed to the top of your browser’s
+      viewport.
+    </p>
+    <button (click)="onOpenModal(null, 'add')" class="btn btn-lg btn-primary">
+      Add New Blog Entry
+    </button>
+  </div>
+
+  <div class="row row-cols-1 row-cols-md-3 g-4">
+    <div *ngFor="let entry of blogEntries" class="col">
+      <!-- <app-blog-entry [oneEntry]="entry" class="single-entry"></app-blog-entry> -->
+
+      <div class="card h-100">
+        <div class="card-img-top"><i class="fa-solid fa-terminal"></i></div>
+        <div class="card-body">
+          <h5 class="card-title">{{ entry?.name }}</h5>
+          <p class="card-text">{{ entry?.content }}</p>
+        </div>
+        <div class="card-footer">
+          <small class="text-muted"
+            >Last updated {{ entry?.timestamp!.split("T")[0] | date
+            }}<span class="edit-delete"
+              ><button
+                (click)="onOpenModal(entry, 'edit')"
+                type="button"
+                class="btn btn-outline-primary"
+              >
+                <i class="fa-solid fa-pencil"></i>
+              </button>
+              <button
+                (click)="onOpenModal(entry, 'delete')"
+                type="button"
+                class="btn btn-outline-danger"
+              >
+                <i class="fa-solid fa-trash"></i>
+              </button>
+            </span>
+          </small>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Button trigger modal -->
+  <!-- <button hidden id="show-modal" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+  Launch demo modal
+</button> -->
+
+  <!-- Add Modal -->
+  <div
+    class="modal fade"
+    id="addModal"
+    tabindex="-1"
+    aria-labelledby="addModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addModalLabel">Add New Blog Entry</h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <form #addForm="ngForm" (ngSubmit)="onAddNewBlog(addForm)">
+            <div class="mb-3">
+              <label for="addInputName" class="form-label">Name</label>
+              <input
+                ngModel
+                name="name"
+                type="text"
+                class="form-control"
+                id="addInputName"
+                required
+              />
+            </div>
+            <div class="mb-3">
+              <label for="addInputContent" class="form-label"
+                >Blog Content</label
+              >
+              <textarea
+                ngModel
+                name="content"
+                id="addInputContent"
+                cols="30"
+                rows="10"
+                class="form-control"
+                required
+              ></textarea>
+            </div>
+            <div class="modal-footer">
+              <button
+                id="add-close"
+                type="button"
+                class="btn btn-secondary"
+                data-bs-dismiss="modal"
+              >
+                Close
+              </button>
+              <button
+                [disabled]="addForm.invalid"
+                type="submit"
+                class="btn btn-primary"
+              >
+                Submit
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Modal -->
+  <div
+    class="modal fade"
+    id="editModal"
+    tabindex="-1"
+    aria-labelledby="editModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="editModalLabel">Edit Blog Entry</h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <form #editForm="ngForm" (ngSubmit)="editBlogEntry(editForm)">
+            <input
+              type="hidden"
+              id="id"
+              name="id"
+              class="form-control"
+              ngModel="{{ editEntry?.id }}"
+            />
+            <input
+              type="hidden"
+              id="timestamp"
+              name="timestamp"
+              class="form-control"
+              ngModel="{{ editEntry?.timestamp }}"
+            />
+            <input
+              type="hidden"
+              id="downvotes"
+              name="downvotes"
+              class="form-control"
+              ngModel="{{ editEntry?.downvotes }}"
+            />
+            <input
+              type="hidden"
+              id="upvotes"
+              name="upvotes"
+              class="form-control"
+              ngModel="{{ editEntry?.upvotes }}"
+            />
+
+            <div class="mb-3">
+              <label for="editInputName" class="form-label">Name</label>
+              <input
+                name="name"
+                type="text"
+                class="form-control"
+                id="editInputName"
+                ngModel="{{ editEntry?.name }}"
+              />
+            </div>
+            <div class="mb-3">
+              <label for="editInputContent" class="form-label"
+                >Blog Content</label
+              >
+              <textarea
+                name="content"
+                id="editInputContent"
+                cols="30"
+                rows="10"
+                class="form-control"
+                ngModel="{{ editEntry?.content }}"
+              ></textarea>
+            </div>
+            <div class="modal-footer">
+              <button
+                id="edit-close"
+                type="button"
+                class="btn btn-secondary"
+                data-bs-dismiss="modal"
+              >
+                Close
+              </button>
+              <button type="submit" class="btn btn-primary">Submit</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Modal -->
+  <div
+    class="modal fade"
+    id="deleteModal"
+    tabindex="-1"
+    aria-labelledby="deleteModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="deleteModalLabel">Delete ID: {{ deleteEntry?.id }}</h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <p>Delete Blog Entry for: {{ deleteEntry?.name }}?</p>
+        </div>
+        <div class="modal-footer">
+          <button
+            id="delete-close"
+            type="button"
+            class="btn btn-secondary"
+            data-bs-dismiss="modal"
+          >
+            No
+          </button>
+          <button (click)="deleteBlogEntry(deleteEntry!.id)" type="submit" class="btn btn-danger">Yes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>

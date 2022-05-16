@@ -1,0 +1,14 @@
+.fa-terminal {
+    font-size: 4em;
+    text-align: center;
+    width: 100%;
+}
+
+.edit-delete{
+    float: right;
+}
+
+.btn-outline-primary{
+    margin-right: 1em;
+}
+
